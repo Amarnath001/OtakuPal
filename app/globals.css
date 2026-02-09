@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --otaku-bg: #0f0f14;
+  --otaku-card: #16161e;
+  --otaku-border: #2a2a36;
+  --otaku-accent: #7c3aed;
+}
+
+body {
+  background: var(--otaku-bg);
+  color: #e4e4e7;
+}

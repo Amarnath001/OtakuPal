@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  sessions  Session[]
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  messages  Message[]
+  preference Preference?
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String   // "user" | "assistant"
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Preference {
+  id                String   @id @default(cuid())
+  sessionId         String   @unique
+  session           Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  likedGenres       String   @default("[]") // JSON array
+  dislikedGenres    String   @default("[]")
+  likedTags         String   @default("[]")
+  dislikedTags      String   @default("[]")
+  preferredFormat   String?  // ANIME | MANGA
+  era               String?  // e.g. "2000s", "recent"
+  pacing            String?  // slow | medium | fast
+  mood              String?  // dark | light | mixed
+  noGoFilters       String   @default("[]") // e.g. ["ecchi"]
+  examplesLiked     String   @default("[]") // titles user mentioned
+  questionCount     Int      @default(0)
+  updatedAt         DateTime @updatedAt
+}
